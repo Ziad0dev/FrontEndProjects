@@ -51,6 +51,16 @@ var colors = [
 var currentQuote = '',
   currentAuthor = '';
 
+// Used when the quotes gist cannot be reached (offline, rate-limited, ...)
+const fallbackQuotes = {
+  quotes: [
+    { quote: 'The best way to predict the future is to invent it.', author: 'Alan Kay' },
+    { quote: 'Simplicity is prerequisite for reliability.', author: 'Edsger W. Dijkstra' },
+    { quote: 'First, solve the problem. Then, write the code.', author: 'John Johnson' },
+    { quote: 'Talk is cheap. Show me the code.', author: 'Linus Torvalds' }
+  ]
+};
+
 function getQuotes() {
   return $.ajax({
     headers: {
@@ -61,10 +71,12 @@ function getQuotes() {
     success: function (jsonQuotes) {
       if (typeof jsonQuotes === 'string') {
         quotesData = JSON.parse(jsonQuotes);
-        console.log('quotesData');
-        console.log(quotesData);
+      } else {
+        quotesData = jsonQuotes;
       }
     }
+  }).catch(() => {
+    quotesData = fallbackQuotes;
   });
 }
 
